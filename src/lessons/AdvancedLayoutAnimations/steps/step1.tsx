@@ -9,8 +9,17 @@ import {
   TextInput,
   View,
 } from "react-native";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+} from "react-native-reanimated";
+
+const AnimatedEntypo = Animated.createAnimatedComponent(Entypo);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const { width } = Dimensions.get("screen");
+const _duration = 500;
 const _spacing = 16;
 const _closedSize = 64;
 const _openedSize = width - _spacing * 2;
@@ -22,33 +31,41 @@ export function AdvancedLayoutAnimationsLesson() {
 
   return (
     <Container>
-      <View
+      <Animated.View
         style={[
           {
             width: isOpen ? _openedSize : _closedSize,
             height: isOpen ? "auto" : _closedSize,
+            minHeight: _closedSize,
           },
           styles.fabButton,
-        ]}>
+        ]}
+        layout={LinearTransition.duration(_duration)}>
         <View style={styles.rowBetween}>
           {isOpen && <Text style={styles.heading}>App.js Workshop</Text>}
-          <Pressable onPress={() => setIsOpen((isOpen) => !isOpen)}>
+          <AnimatedPressable
+            onPress={() => setIsOpen((isOpen) => !isOpen)}
+            layout={LinearTransition.duration(_duration)}>
             {isOpen ? (
-              <Entypo
+              <AnimatedEntypo
                 key='close'
                 name='cross'
                 size={_closeIconSize}
                 color='#fff'
+                entering={FadeIn.duration(_duration)}
+                exiting={FadeOut.duration(_duration)}
               />
             ) : (
-              <Entypo
+              <AnimatedEntypo
                 key='open'
                 name='plus'
                 size={_openIconSize}
                 color='#fff'
+                entering={FadeIn.duration(_duration)}
+                exiting={FadeOut.duration(_duration)}
               />
             )}
-          </Pressable>
+          </AnimatedPressable>
         </View>
         {isOpen && (
           <View style={styles.content}>
@@ -70,7 +87,7 @@ export function AdvancedLayoutAnimationsLesson() {
             />
           </View>
         )}
-      </View>
+      </Animated.View>
     </Container>
   );
 }
