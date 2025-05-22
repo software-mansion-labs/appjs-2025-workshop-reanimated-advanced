@@ -35,7 +35,7 @@ const _openIconSize = _closedSize * 0.5;
 export function AdvancedLayoutAnimationsLesson() {
   const [isOpen, setIsOpen] = useState(false);
   const keyboardState = useAnimatedKeyboard();
-  const keyboardHeightStyle = useAnimatedStyle(() => {
+  const keyboardHeightStylez = useAnimatedStyle(() => {
     return {
       marginBottom:
         keyboardState.state.value === KeyboardState.OPEN
@@ -52,7 +52,7 @@ export function AdvancedLayoutAnimationsLesson() {
             height: isOpen ? "auto" : _closedSize,
           },
           styles.fabButton,
-          keyboardHeightStyle,
+          keyboardHeightStylez,
         ]}
         // Use Layout if you're using an old version of Reanimated
         layout={LinearTransition.duration(_duration)}>

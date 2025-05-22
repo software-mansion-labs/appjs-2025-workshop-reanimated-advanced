@@ -9,7 +9,16 @@ import {
   TextInput,
   View,
 } from "react-native";
-import Animated, { LinearTransition } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeOut,
+  FadeOutDown,
+  LinearTransition,
+} from "react-native-reanimated";
+
+const AnimatedEntypo = Animated.createAnimatedComponent(Entypo);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const { width } = Dimensions.get("screen");
 const _duration = 500;
@@ -29,33 +38,48 @@ export function AdvancedLayoutAnimationsLesson() {
           {
             width: isOpen ? _openedSize : _closedSize,
             height: isOpen ? "auto" : _closedSize,
-            minHeight: _closedSize,
           },
           styles.fabButton,
         ]}
         layout={LinearTransition.duration(_duration)}>
         <View style={styles.rowBetween}>
-          {isOpen && <Text style={styles.heading}>App.js Workshop</Text>}
-          <Pressable onPress={() => setIsOpen((isOpen) => !isOpen)}>
+          {isOpen && (
+            <Animated.Text
+              style={styles.heading}
+              entering={FadeInDown.duration(_duration)}
+              exiting={FadeOutDown.duration(_duration)}>
+              App.js Workshop
+            </Animated.Text>
+          )}
+          <AnimatedPressable
+            onPress={() => setIsOpen((isOpen) => !isOpen)}
+            layout={LinearTransition.duration(_duration)}>
             {isOpen ? (
-              <Entypo
+              <AnimatedEntypo
                 key='close'
                 name='cross'
                 size={_closeIconSize}
                 color='#fff'
+                entering={FadeIn.duration(_duration)}
+                exiting={FadeOut.duration(_duration)}
               />
             ) : (
-              <Entypo
+              <AnimatedEntypo
                 key='open'
                 name='plus'
                 size={_openIconSize}
                 color='#fff'
+                entering={FadeIn.duration(_duration)}
+                exiting={FadeOut.duration(_duration)}
               />
             )}
-          </Pressable>
+          </AnimatedPressable>
         </View>
         {isOpen && (
-          <View style={styles.content}>
+          <Animated.View
+            entering={FadeInDown.duration(_duration)}
+            exiting={FadeOutDown.duration(_duration)}
+            style={styles.content}>
             <Text style={styles.body}>
               This is a start of your journey to become an animation expert in
               React Native. We're going to dive deep into more advanced
@@ -72,7 +96,7 @@ export function AdvancedLayoutAnimationsLesson() {
               placeholder='Your feedback means a lot to us.'
               placeholderTextColor='rgba(255,255,255,0.3)'
             />
-          </View>
+          </Animated.View>
         )}
       </Animated.View>
     </Container>

@@ -11,9 +11,7 @@ import {
 } from "react-native";
 import Animated, {
   FadeIn,
-  FadeInDown,
   FadeOut,
-  FadeOutDown,
   LinearTransition,
 } from "react-native-reanimated";
 
@@ -41,18 +39,9 @@ export function AdvancedLayoutAnimationsLesson() {
           },
           styles.fabButton,
         ]}
-        // Use Layout if you're using an old version of Reanimated
         layout={LinearTransition.duration(_duration)}>
         <View style={styles.rowBetween}>
-          {isOpen && (
-            <Animated.Text
-              style={styles.heading}
-              entering={FadeInDown.duration(_duration)}
-              exiting={FadeOutDown.duration(_duration)}
-              layout={LinearTransition.duration(_duration)}>
-              App.js Workshop
-            </Animated.Text>
-          )}
+          {isOpen && <Text style={styles.heading}>App.js Workshop</Text>}
           <AnimatedPressable
             onPress={() => setIsOpen((isOpen) => !isOpen)}
             layout={LinearTransition.duration(_duration)}>
@@ -78,10 +67,7 @@ export function AdvancedLayoutAnimationsLesson() {
           </AnimatedPressable>
         </View>
         {isOpen && (
-          <Animated.View
-            entering={FadeInDown.duration(_duration)}
-            exiting={FadeOutDown.duration(_duration)}
-            style={styles.content}>
+          <View style={styles.content}>
             <Text style={styles.body}>
               This is a start of your journey to become an animation expert in
               React Native. We're going to dive deep into more advanced
@@ -98,7 +84,7 @@ export function AdvancedLayoutAnimationsLesson() {
               placeholder='Your feedback means a lot to us.'
               placeholderTextColor='rgba(255,255,255,0.3)'
             />
-          </Animated.View>
+          </View>
         )}
       </Animated.View>
     </Container>
