@@ -1,3 +1,4 @@
+import { apps } from "@/lib/apps";
 import { useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -18,12 +19,6 @@ const GAP = 16;
 const TILE_SIZE =
   (Dimensions.get("screen").width - (ITEMS_IN_ROW_COUNT + 1) * GAP) /
   ITEMS_IN_ROW_COUNT;
-
-const data = new Array(20).fill(0).map((_, i) => ({
-  id: `App ${i}`,
-  name: `App ${i}`,
-  image: "https://picsum.photos/64/64",
-}));
 
 const shake: CSSAnimationKeyframes = {
   from: {
@@ -51,7 +46,7 @@ const shake: CSSAnimationKeyframes = {
 
 export function ReorderIconsLesson() {
   const insets = useSafeAreaInsets();
-  const [items, setItems] = useState(data);
+  const [items, setItems] = useState(apps);
   const activeItemId = useSharedValue<string | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
   const [isReordering, setIsReordering] = useState(false);
@@ -60,7 +55,7 @@ export function ReorderIconsLesson() {
     if (placeholderIndex === null || activeItemId.value === null) {
       return;
     }
-    const currentItem = data.find((item) => item.id === activeItemId.value);
+    const currentItem = items.find((item) => item.id === activeItemId.value);
     if (!currentItem) {
       return;
     }
@@ -100,8 +95,8 @@ export function ReorderIconsLesson() {
             setReordering={setIsReordering}
           >
             <View style={styles.appContainer}>
-              <Image source={{ uri: app.image }} style={styles.appIcon} />
-              <Text style={styles.appName}>{app.name}</Text>
+              <Image source={app.icon} style={styles.appIcon} />
+              <Text style={styles.appName} numberOfLines={1}>{app.name}</Text>
             </View>
           </Draggable>
         ))}
@@ -176,7 +171,7 @@ function Draggable({
 
       const newPlaceholderIndex = Math.min(
         column + row * ITEMS_IN_ROW_COUNT,
-        data.length,
+        apps.length,
       );
 
       runOnJS(setPlaceholderIndex)(newPlaceholderIndex);
@@ -267,10 +262,11 @@ const styles = StyleSheet.create({
   },
   appIcon: {
     width: TILE_SIZE,
+    height: TILE_SIZE,
     aspectRatio: 1,
     borderRadius: 20,
     borderCurve: "continuous",
-    marginBottom: 2,
+    marginBottom: 4,
   },
-  appName: { fontSize: 14, color: "#fff" },
+  appName: { fontSize: 13, color: "#fff", width: TILE_SIZE, textAlign: "center" },
 });
