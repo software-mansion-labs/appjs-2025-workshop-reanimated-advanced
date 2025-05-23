@@ -67,7 +67,7 @@ export function CSSAnimationsLesson() {
     };
   });
 
-  const composed = Gesture.Simultaneous(longPress, tap);
+  const composed = Gesture.Exclusive(longPress, tap);
 
   return (
     <View style={styles.container}>
