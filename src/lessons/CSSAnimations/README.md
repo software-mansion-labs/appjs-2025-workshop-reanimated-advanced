@@ -1,16 +1,10 @@
 # CSS Animations Advanced
 
-
 https://github.com/user-attachments/assets/c6cd3ecc-4d0d-4f38-8a1f-49cd50e3a269
-
 
 ## Step 1 - Add a shake animation using CSS Animations
 
-
-
 https://github.com/user-attachments/assets/eb5efd34-bdd3-4341-9863-704913f3cef5
-
-
 
 <details>
 <summary>
@@ -80,7 +74,70 @@ const shake: CSSAnimationKeyframes = {
 </details>
 <br />
 
-## Step 2 - Long press to turn on the edit mode (shake animation), tap to cancel
+## Step 2 - Add a long press to switch to the edit mode (turn on the shake animation), tap to cancel
+
+<details>
+<summary>
+  <b>[1]</b> Define a <code>isEditMode</code> state variable. Make it <code>false</code> by default. Attach it to the animation via the <code>animationPlayState</code> property.
+</summary>
+
+<br/>
+
+```jsx
+const [isEditMode, setEditMode] = useState(false);
+
+<Animated.View
+  style={{
+    {/* ... */}
+    animationPlayState: isEditMode ? "running" : "paused",
+  }}
+>
+  <AppIcon app={apps[0]} />
+</Animated.View>;
+```
+
+</details>
+<br />
+
+<details>
+<summary>
+  <b>[2]</b> Define a <code>LongPress</code> gesture that enables the edit mode and a <code>Tap</code> gesture that disables it. Use  <code>onStart</code> callback for both of the gestures.
+</summary>
+
+<br/>
+
+```jsx
+const [isEditMode, setEditMode] = useState(false);
+
+const longPress = Gesture.LongPress().onStart(() => {
+  runOnJS(setEditMode)(true);
+});
+
+const tap = Gesture.Tap().onStart(() => {
+  runOnJS(setEditMode)(false);
+});
+```
+
+</details>
+<br />
+
+<details>
+<summary>
+  <b>[3]</b> Make the gestures mutually exclusive. Pass the composed gesture to a <code>GestureDetector</code> wrapping our <code>Animated.View</code>.
+</summary>
+
+<br/>
+
+```jsx
+const composed = Gesture.Exclusive(longPress, tap);
+
+<GestureDetector gesture={composed}>
+  <Animated.View>{/* */}</Animated.View>
+</GestureDetector>;
+```
+
+</details>
+<br />
 
 ## Step 3 - Scale the app icon to indicate the edit mode change
 
