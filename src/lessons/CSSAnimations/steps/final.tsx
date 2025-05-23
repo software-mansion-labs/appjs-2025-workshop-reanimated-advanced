@@ -74,11 +74,10 @@ export function CSSAnimationsLesson() {
       <GestureDetector gesture={composed}>
         <Animated.View
           style={[
-            {
+            isEditMode && {
               animationName: shake,
               animationDuration: 700,
               animationIterationCount: "infinite",
-              animationPlayState: isEditMode ? "running" : "paused",
             },
             animatedStyle,
           ]}

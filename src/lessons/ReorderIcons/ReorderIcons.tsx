@@ -224,12 +224,11 @@ function Draggable({
     <GestureDetector gesture={composed}>
       <Animated.View
         style={[
-          {
+          isEditMode && {
             animationName: shake,
             animationDuration: 700,
             animationIterationCount: "infinite",
             animationDelay: Math.random() * 300,
-            animationPlayState: isEditMode ? "running" : "paused",
           },
           animatedStyle,
         ]}
