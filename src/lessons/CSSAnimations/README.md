@@ -76,15 +76,11 @@ const shake: CSSAnimationKeyframes = {
 
 ## Step 2 - Add a long press to switch to the edit mode (turn on the shake animation), tap to cancel
 
-
-
 https://github.com/user-attachments/assets/3e78a5eb-899f-4b67-abbb-f681f37818a7
-
-
 
 <details>
 <summary>
-  <b>[1]</b> Define a <code>isEditMode</code> state variable. Make it <code>false</code> by default. Attach it to the animation via the <code>animationPlayState</code> property.
+  <b>[1]</b> Define a <code>isEditMode</code> state variable. Make it <code>false</code> by default. Detach the animation object using this variable. 
 </summary>
 
 <br/>
@@ -93,13 +89,14 @@ https://github.com/user-attachments/assets/3e78a5eb-899f-4b67-abbb-f681f37818a7
 const [isEditMode, setEditMode] = useState(false);
 
 <Animated.View
-  style={{
-    {/* ... */}
-    animationPlayState: isEditMode ? "running" : "paused",
-  }}
+  style={[
+    isEditMode && {
+      animationName: shake,
+      animationDuration: 700,
+      animationIterationCount: "infinite",
+    },
+  ]}
 >
-  <AppIcon app={apps[0]} />
-</Animated.View>;
 ```
 
 </details>
@@ -146,6 +143,69 @@ const composed = Gesture.Exclusive(longPress, tap);
 <br />
 
 ## Step 3 - Scale the app icon to indicate the edit mode change
+
+https://github.com/user-attachments/assets/c6cd3ecc-4d0d-4f38-8a1f-49cd50e3a269
+
+<details>
+<summary>
+  <b>[1]</b> Define a <code>scale</code> shared value defaulted to <code>1</code>. Attach it to the <code>Animated.View</code> using <code>useAnimatedStyle</code>.
+</summary>
+
+<br/>
+
+```jsx
+import { useSharedValue } from "react-native-reanimated";
+
+const scale = useSharedValue(1);
+
+const animatedStyle = useAnimatedStyle(() => {
+  return {
+    transform: [{ scale: scale.value }],
+  };
+});
+
+<Animated.View
+  style={[
+    isEditMode &&
+      {
+        /* ... */
+      },
+    animatedStyle,
+  ]}
+>
+  {/* */}
+</Animated.View>;
+```
+
+</details>
+<br />
+
+<details>
+<summary>
+  <b>[2]</b> Smoothly grow the app icon by 10% using the <code>LongPress</code> gesture. Make sure to scale the app icon back to it's original size when user aborts the gesture.
+</summary>
+
+<br/>
+
+```jsx
+const longPress = Gesture.LongPress()
+  .onBegin(() => {
+    scale.value = withTiming(1.1, { duration: 500 });
+  })
+  .onStart(() => {
+    scale.value = withTiming(1, { duration: 150 }, (finished) => {
+      if (finished) {
+        runOnJS(setEditMode)(true);
+      }
+    });
+  })
+  .onFinalize(() => {
+    scale.value = withTiming(1, { duration: 150 });
+  });
+```
+
+</details>
+<br />
 
 ## Next step
 
