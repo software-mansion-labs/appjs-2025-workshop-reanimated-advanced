@@ -1,7 +1,8 @@
+import { AppIcon } from "@/components/AppIcon";
 import { apps } from "@/lib/apps";
 import { layout } from "@/lib/theme";
 import { useEffect, useState } from "react";
-import { Image, Platform, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   CSSAnimationKeyframes,
@@ -86,12 +87,7 @@ export function ReorderIconsLesson() {
             isEditMode={isEditMode}
             setEditMode={setEditMode}
           >
-            <View style={styles.appContainer}>
-              <Image source={app.icon} style={styles.appIcon} />
-              <Text style={styles.appName} numberOfLines={1}>
-                {app.name}
-              </Text>
-            </View>
+            <AppIcon app={app} />
           </Draggable>
         ))}
       </View>
@@ -153,7 +149,6 @@ function Draggable({
 
   const tap = Gesture.Tap().onStart(() => {
     runOnJS(setEditMode)(false);
-    scale.value = withTiming(1, { duration: 150 });
   });
 
   const pan = Gesture.Pan()
@@ -229,11 +224,12 @@ function Draggable({
     <GestureDetector gesture={composed}>
       <Animated.View
         style={[
-          isEditMode && {
+          {
             animationName: shake,
             animationDuration: 700,
             animationIterationCount: "infinite",
             animationDelay: Math.random() * 300,
+            animationPlayState: isEditMode ? "running" : "paused",
           },
           animatedStyle,
         ]}
@@ -258,23 +254,5 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: layout.gap,
     paddingLeft: layout.gap,
-  },
-  appContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  appIcon: {
-    width: layout.tileSize,
-    height: layout.tileSize,
-    aspectRatio: 1,
-    borderRadius: Platform.OS === "android" ? layout.tileSize : 20,
-    borderCurve: "continuous",
-    marginBottom: 4,
-  },
-  appName: {
-    fontSize: 13,
-    color: "#fff",
-    width: layout.tileSize,
-    textAlign: "center",
   },
 });
