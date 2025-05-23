@@ -1,6 +1,16 @@
 # CSS Animations Advanced
 
+
+https://github.com/user-attachments/assets/c6cd3ecc-4d0d-4f38-8a1f-49cd50e3a269
+
+
 ## Step 1 - Add a shake animation using CSS Animations
+
+
+
+https://github.com/user-attachments/assets/eb5efd34-bdd3-4341-9863-704913f3cef5
+
+
 
 <details>
 <summary>
