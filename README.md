@@ -90,4 +90,4 @@ During the workshop we will be using primarily:
 
 ## Next step
 
-**Go to: [CSS Animations Advanced](./src/lessons/CSSAnimationsAdvanced/)**
+**Go to: [CSS Animations](./src/lessons/CSSAnimations/)**
