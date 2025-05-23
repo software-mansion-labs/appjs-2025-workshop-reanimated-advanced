@@ -78,9 +78,7 @@ export function ReorderIconsLesson() {
             id={app.id}
             activeItemId={activeItemId}
             setPlaceholderIndex={setPlaceholderIndex}
-            setItems={setItems}
             reorderItems={reorderItems}
-            index={index}
             initialPosition={{
               column: index % layout.itemsInRowCount,
               row: Math.floor(index / layout.itemsInRowCount),
