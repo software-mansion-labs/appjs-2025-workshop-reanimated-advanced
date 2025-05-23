@@ -1,10 +1,10 @@
 import { apps } from "@/lib/apps";
+import { layout } from "@/lib/theme";
 import { useEffect, useState } from "react";
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
+import { Image, Platform, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   CSSAnimationKeyframes,
-  Easing,
   LinearTransition,
   runOnJS,
   useAnimatedStyle,
@@ -12,13 +12,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const ITEMS_IN_ROW_COUNT = 4;
-const GAP = 16;
-
-const TILE_SIZE =
-  (Dimensions.get("screen").width - (ITEMS_IN_ROW_COUNT + 1) * GAP) /
-  ITEMS_IN_ROW_COUNT;
 
 const shake: CSSAnimationKeyframes = {
   from: {
@@ -49,7 +42,7 @@ export function ReorderIconsLesson() {
   const [items, setItems] = useState(apps);
   const activeItemId = useSharedValue<string | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
-  const [isReordering, setIsReordering] = useState(false);
+  const [isEditMode, setEditMode] = useState(false);
 
   const reorderItems = () => {
     if (placeholderIndex === null || activeItemId.value === null) {
@@ -63,7 +56,7 @@ export function ReorderIconsLesson() {
     const newItems = [...items];
 
     const activeIndex = newItems.findIndex(
-      (item) => item.id === activeItemId.value,
+      (item) => item.id === activeItemId.value
     );
     newItems.splice(activeIndex, 1);
     newItems.splice(placeholderIndex, 0, currentItem);
@@ -88,15 +81,17 @@ export function ReorderIconsLesson() {
             reorderItems={reorderItems}
             index={index}
             initialPosition={{
-              column: index % ITEMS_IN_ROW_COUNT,
-              row: Math.floor(index / ITEMS_IN_ROW_COUNT),
+              column: index % layout.itemsInRowCount,
+              row: Math.floor(index / layout.itemsInRowCount),
             }}
-            isReordering={isReordering}
-            setReordering={setIsReordering}
+            isEditMode={isEditMode}
+            setEditMode={setEditMode}
           >
             <View style={styles.appContainer}>
               <Image source={app.icon} style={styles.appIcon} />
-              <Text style={styles.appName} numberOfLines={1}>{app.name}</Text>
+              <Text style={styles.appName} numberOfLines={1}>
+                {app.name}
+              </Text>
             </View>
           </Draggable>
         ))}
@@ -117,8 +112,8 @@ function Draggable({
   reorderItems,
   activeItemId,
   initialPosition,
-  isReordering,
-  setReordering,
+  isEditMode,
+  setEditMode,
 }: any) {
   const [tileDimension, setDimenstions] = useState<any>();
   const currentPosition = useSharedValue<Position | null>(null);
@@ -130,34 +125,25 @@ function Draggable({
 
   const longPress = Gesture.LongPress()
     .onBegin(() => {
-      if (isReordering) {
+      if (isEditMode) {
         return;
       }
-      scale.value = withTiming(1.1, {
-        duration: 500,
-        easing: Easing.bezier(0.25, 0.1, 0.08, 1.02),
-      });
+      scale.value = withTiming(1.1, { duration: 500 });
     })
     .onStart(() => {
-      scale.value = withTiming(
-        1,
-        {
-          duration: 150,
-        },
-        (finished) => {
-          if (finished) {
-            runOnJS(setReordering)(true);
-          }
-        },
-      );
+      scale.value = withTiming(1, { duration: 150 }, (finished) => {
+        if (finished) {
+          runOnJS(setEditMode)(true);
+        }
+      });
+    })
+    .onFinalize(() => {
+      scale.value = withTiming(1, { duration: 150 });
     });
 
   const tap = Gesture.Tap().onStart(() => {
-    runOnJS(setReordering)(false);
-    scale.value = withTiming(1, {
-      duration: 150,
-      easing: Easing.bezier(0.31, 0.04, 0.03, 1.04),
-    });
+    runOnJS(setEditMode)(false);
+    scale.value = withTiming(1, { duration: 150 });
   });
 
   const pan = Gesture.Pan()
@@ -166,12 +152,19 @@ function Draggable({
       activeItemId.value = id;
     })
     .onChange((e) => {
-      const column = Math.floor(e.absoluteX / (tileDimension?.width + GAP));
-      const row = Math.floor(e.absoluteY / (tileDimension?.height + GAP));
+      if (!isEditMode) {
+        return;
+      }
+      const column = Math.floor(
+        e.absoluteX / (tileDimension?.width + layout.gap)
+      );
+      const row = Math.floor(
+        e.absoluteY / (tileDimension?.height + layout.gap)
+      );
 
       const newPlaceholderIndex = Math.min(
-        column + row * ITEMS_IN_ROW_COUNT,
-        apps.length,
+        column + row * layout.itemsInRowCount,
+        apps.length
       );
 
       runOnJS(setPlaceholderIndex)(newPlaceholderIndex);
@@ -201,13 +194,13 @@ function Draggable({
       currentPosition.value
         ? (initialPosition.column - currentPosition.value.column) *
             tileDimension?.width
-        : 0,
+        : 0
     );
     const adjustY = withTiming(
       currentPosition.value
         ? (initialPosition.row - currentPosition.value.row) *
             tileDimension?.height
-        : 0,
+        : 0
     );
 
     return {
@@ -226,7 +219,7 @@ function Draggable({
     <GestureDetector gesture={composed}>
       <Animated.View
         style={[
-          isReordering && {
+          isEditMode && {
             animationName: shake,
             animationDuration: 700,
             animationIterationCount: "infinite",
@@ -253,20 +246,25 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: GAP,
-    paddingLeft: GAP,
+    gap: layout.gap,
+    paddingLeft: layout.gap,
   },
   appContainer: {
     alignItems: "center",
     justifyContent: "center",
   },
   appIcon: {
-    width: TILE_SIZE,
-    height: TILE_SIZE,
+    width: layout.tileSize,
+    height: layout.tileSize,
     aspectRatio: 1,
-    borderRadius: 20,
+    borderRadius: Platform.OS === "android" ? layout.tileSize : 20,
     borderCurve: "continuous",
     marginBottom: 4,
   },
-  appName: { fontSize: 13, color: "#fff", width: TILE_SIZE, textAlign: "center" },
+  appName: {
+    fontSize: 13,
+    color: "#fff",
+    width: layout.tileSize,
+    textAlign: "center",
+  },
 });

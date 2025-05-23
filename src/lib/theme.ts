@@ -4,6 +4,9 @@ const { width } = Dimensions.get("screen");
 
 const maxVisibleItems = 2; // this is 0.5 - 1 - 0.5 combo
 
+const itemsInRowCount = 4;
+const gap = 16;
+
 export const layout = {
   spacing: 8,
   radius: 8,
@@ -16,6 +19,10 @@ export const layout = {
   // Interpolation
   itemSize: width / maxVisibleItems,
   screenWidth: width,
+  // ReorderIcons
+  itemsInRowCount,
+  gap,
+  tileSize: (width - (itemsInRowCount + 1) * gap) / itemsInRowCount,
 };
 
 export const colors = {
