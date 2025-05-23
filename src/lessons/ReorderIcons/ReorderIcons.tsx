@@ -6,7 +6,6 @@ import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   CSSAnimationKeyframes,
-  LinearTransition,
   runOnJS,
   SharedValue,
   useAnimatedStyle,
@@ -121,13 +120,9 @@ function Draggable({
   isEditMode,
   setEditMode,
 }: DraggableProps) {
-  const [tileDimension, setDimenstions] = useState<any>();
-  const currentPosition = useSharedValue<Position | null>(null);
+  const [tileDimension, setTileDimensions] = useState<any>();
 
-  const pressed = useSharedValue(false);
   const scale = useSharedValue(1);
-  const offsetX = useSharedValue<number>(0);
-  const offsetY = useSharedValue<number>(0);
 
   const longPress = Gesture.LongPress()
     .onBegin(() => {
@@ -151,74 +146,13 @@ function Draggable({
     runOnJS(setEditMode)(false);
   });
 
-  const pan = Gesture.Pan()
-    .onBegin(() => {
-      pressed.value = true;
-      activeItemId.value = id;
-    })
-    .onChange((e) => {
-      if (!isEditMode) {
-        return;
-      }
-      const column = Math.floor(
-        e.absoluteX / (tileDimension?.width + layout.gap)
-      );
-      const row = Math.floor(
-        e.absoluteY / (tileDimension?.height + layout.gap)
-      );
-
-      const newPlaceholderIndex = Math.min(
-        column + row * layout.itemsInRowCount,
-        apps.length
-      );
-
-      runOnJS(setPlaceholderIndex)(newPlaceholderIndex);
-
-      offsetX.value += e.changeX;
-      offsetY.value += e.changeY;
-
-      currentPosition.value = {
-        column,
-        row,
-      };
-    })
-    .onFinalize(() => {
-      runOnJS(reorderItems)();
-
-      // Cleanup
-      pressed.value = false;
-      offsetX.value = 0;
-      offsetY.value = 0;
-      activeItemId.value = null;
-      runOnJS(setPlaceholderIndex)(null);
-      currentPosition.value = null;
-    });
-
   const animatedStyle = useAnimatedStyle(() => {
-    const adjustX = withTiming(
-      currentPosition.value
-        ? (initialPosition.column - currentPosition.value.column) *
-            tileDimension?.width
-        : 0
-    );
-    const adjustY = withTiming(
-      currentPosition.value
-        ? (initialPosition.row - currentPosition.value.row) *
-            tileDimension?.height
-        : 0
-    );
-
     return {
-      transform: [
-        { scale: scale.value },
-        { translateX: offsetX.value + adjustX },
-        { translateY: offsetY.value + adjustY },
-      ],
-      zIndex: pressed.value ? 1 : 0,
+      transform: [{ scale: scale.value }],
     };
   });
 
-  const composed = Gesture.Exclusive(longPress, tap, pan);
+  const composed = Gesture.Exclusive(longPress, tap);
 
   return (
     <GestureDetector gesture={composed}>
@@ -232,8 +166,7 @@ function Draggable({
           },
           animatedStyle,
         ]}
-        onLayout={(e) => setDimenstions(e.nativeEvent.layout)}
-        layout={LinearTransition}
+        onLayout={(e) => setTileDimensions(e.nativeEvent.layout)}
       >
         {children}
       </Animated.View>
