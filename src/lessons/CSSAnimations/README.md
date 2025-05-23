@@ -76,6 +76,12 @@ const shake: CSSAnimationKeyframes = {
 
 ## Step 2 - Add a long press to switch to the edit mode (turn on the shake animation), tap to cancel
 
+
+
+https://github.com/user-attachments/assets/3e78a5eb-899f-4b67-abbb-f681f37818a7
+
+
+
 <details>
 <summary>
   <b>[1]</b> Define a <code>isEditMode</code> state variable. Make it <code>false</code> by default. Attach it to the animation via the <code>animationPlayState</code> property.
