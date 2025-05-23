@@ -7,6 +7,7 @@ import Animated, {
   CSSAnimationKeyframes,
   LinearTransition,
   runOnJS,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -105,6 +106,17 @@ interface Position {
   row: number;
 }
 
+interface DraggableProps {
+  children: React.ReactNode;
+  id: string;
+  setPlaceholderIndex: (index: number | null) => void;
+  reorderItems: () => void;
+  activeItemId: SharedValue<string | null>;
+  initialPosition: Position;
+  isEditMode: boolean;
+  setEditMode: (edit: boolean) => void;
+}
+
 function Draggable({
   children,
   id,
@@ -114,7 +126,7 @@ function Draggable({
   initialPosition,
   isEditMode,
   setEditMode,
-}: any) {
+}: DraggableProps) {
   const [tileDimension, setDimenstions] = useState<any>();
   const currentPosition = useSharedValue<Position | null>(null);
 
