@@ -8,12 +8,12 @@ export const routes: RouteMeta[] = [
   {
     href: "CSSAnimationsAdvanced",
     title: "CSS Animations 👉",
-    subtitle: "Advanced - Lesson 1",
+    subtitle: "Lesson 1",
   },
   {
     href: "ReorderIcons",
     title: "ReorderIcons 👉",
-    subtitle: "(Drag'n'Drop) Lesson 2",
+    subtitle: "Lesson 2",
   },
   {
     href: "DynamicTabs",
@@ -33,6 +33,6 @@ export const routes: RouteMeta[] = [
   {
     href: "AdvancedLayoutAnimations",
     title: "Layout Animations 👉",
-    subtitle: "Advanced - Lesson 6",
+    subtitle: "Lesson 6",
   },
 ];
