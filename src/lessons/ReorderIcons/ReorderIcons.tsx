@@ -14,6 +14,22 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+interface Position {
+  column: number;
+  row: number;
+}
+
+interface DraggableProps {
+  children: React.ReactNode;
+  id: string;
+  setPlaceholderIndex: (index: number | null) => void;
+  reorderItems: () => void;
+  activeItemId: SharedValue<string | null>;
+  initialPosition: Position;
+  isEditMode: boolean;
+  setEditMode: (edit: boolean) => void;
+}
+
 const shake: CSSAnimationKeyframes = {
   from: {
     transform: [{ rotateZ: "2deg" }],
@@ -37,78 +53,6 @@ const shake: CSSAnimationKeyframes = {
     transform: [{ rotateZ: "2deg" }],
   },
 };
-
-export function ReorderIconsLesson() {
-  const insets = useSafeAreaInsets();
-  const [items, setItems] = useState(apps);
-  const activeItemId = useSharedValue<string | null>(null);
-  const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
-  const [isEditMode, setEditMode] = useState(false);
-
-  const reorderItems = () => {
-    if (placeholderIndex === null || activeItemId.value === null) {
-      return;
-    }
-    const currentItem = items.find((item) => item.id === activeItemId.value);
-    if (!currentItem) {
-      return;
-    }
-
-    const newItems = [...items];
-
-    const activeIndex = newItems.findIndex(
-      (item) => item.id === activeItemId.value
-    );
-    newItems.splice(activeIndex, 1);
-    newItems.splice(placeholderIndex, 0, currentItem);
-
-    setItems(newItems);
-  };
-
-  useEffect(() => {
-    reorderItems();
-  }, [placeholderIndex]);
-
-  return (
-    <View style={[styles.background, { paddingTop: insets.top }]}>
-      <View style={styles.container}>
-        {items.map((app, index) => (
-          <Draggable
-            key={app.id}
-            id={app.id}
-            activeItemId={activeItemId}
-            setPlaceholderIndex={setPlaceholderIndex}
-            reorderItems={reorderItems}
-            initialPosition={{
-              column: index % layout.itemsInRowCount,
-              row: Math.floor(index / layout.itemsInRowCount),
-            }}
-            isEditMode={isEditMode}
-            setEditMode={setEditMode}
-          >
-            <AppIcon app={app} />
-          </Draggable>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-interface Position {
-  column: number;
-  row: number;
-}
-
-interface DraggableProps {
-  children: React.ReactNode;
-  id: string;
-  setPlaceholderIndex: (index: number | null) => void;
-  reorderItems: () => void;
-  activeItemId: SharedValue<string | null>;
-  initialPosition: Position;
-  isEditMode: boolean;
-  setEditMode: (edit: boolean) => void;
-}
 
 function Draggable({
   children,
@@ -173,6 +117,63 @@ function Draggable({
     </GestureDetector>
   );
 }
+
+export function ReorderIconsLesson() {
+  const insets = useSafeAreaInsets();
+  const [items, setItems] = useState(apps);
+  const activeItemId = useSharedValue<string | null>(null);
+  const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
+  const [isEditMode, setEditMode] = useState(false);
+
+  const reorderItems = () => {
+    if (placeholderIndex === null || activeItemId.value === null) {
+      return;
+    }
+    const currentItem = items.find((item) => item.id === activeItemId.value);
+    if (!currentItem) {
+      return;
+    }
+
+    const newItems = [...items];
+
+    const activeIndex = newItems.findIndex(
+      (item) => item.id === activeItemId.value
+    );
+    newItems.splice(activeIndex, 1);
+    newItems.splice(placeholderIndex, 0, currentItem);
+
+    setItems(newItems);
+  };
+
+  useEffect(() => {
+    reorderItems();
+  }, [placeholderIndex]);
+
+  return (
+    <View style={[styles.background, { paddingTop: insets.top }]}>
+      <View style={styles.container}>
+        {items.map((app, index) => (
+          <Draggable
+            key={app.id}
+            id={app.id}
+            activeItemId={activeItemId}
+            setPlaceholderIndex={setPlaceholderIndex}
+            reorderItems={reorderItems}
+            initialPosition={{
+              column: index % layout.itemsInRowCount,
+              row: Math.floor(index / layout.itemsInRowCount),
+            }}
+            isEditMode={isEditMode}
+            setEditMode={setEditMode}
+          >
+            <AppIcon app={app} />
+          </Draggable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
