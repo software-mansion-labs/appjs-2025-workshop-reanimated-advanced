@@ -204,7 +204,7 @@ export function ReorderIconsLesson() {
   const [isEditMode, setEditMode] = useState(false);
   const activeItemId = useSharedValue<string | null>(null);
 
-  const getTileDimenstion = (e: LayoutChangeEvent) => {
+  const getTileDimension = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
     if (!tileDimension) {
       setTileDimension({ width, height });
@@ -254,7 +254,7 @@ export function ReorderIconsLesson() {
             setEditMode={setEditMode}
             tileDimension={tileDimension}
           >
-            <AppIcon app={app} onLayout={getTileDimenstion} />
+            <AppIcon app={app} onLayout={getTileDimension} />
           </Draggable>
         ))}
       </View>
