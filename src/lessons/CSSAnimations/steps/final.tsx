@@ -61,7 +61,7 @@ export function CSSAnimationsLesson() {
     runOnJS(setEditMode)(false);
   });
 
-  const animatedStyle = useAnimatedStyle(() => {
+  const scaleStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }],
     };
@@ -79,7 +79,7 @@ export function CSSAnimationsLesson() {
               animationDuration: 700,
               animationIterationCount: "infinite",
             },
-            animatedStyle,
+            scaleStyle,
           ]}
         >
           <AppIcon app={apps[0]} />

@@ -158,7 +158,7 @@ import { useSharedValue } from "react-native-reanimated";
 
 const scale = useSharedValue(1);
 
-const animatedStyle = useAnimatedStyle(() => {
+const scaleStyle = useAnimatedStyle(() => {
   return {
     transform: [{ scale: scale.value }],
   };
@@ -170,7 +170,7 @@ const animatedStyle = useAnimatedStyle(() => {
       {
         /* ... */
       },
-    animatedStyle,
+    scaleStyle,
   ]}
 >
   {/* */}
