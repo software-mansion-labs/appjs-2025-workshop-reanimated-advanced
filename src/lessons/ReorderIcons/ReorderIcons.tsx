@@ -6,6 +6,7 @@ import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   CSSAnimationKeyframes,
+  LinearTransition,
   runOnJS,
   SharedValue,
   useAnimatedStyle,
@@ -28,6 +29,142 @@ interface DraggableProps {
   initialPosition: Position;
   isEditMode: boolean;
   setEditMode: (edit: boolean) => void;
+}
+
+function Draggable({
+  children,
+  id,
+  setPlaceholderIndex,
+  reorderItems,
+  activeItemId,
+  initialPosition,
+  isEditMode,
+  setEditMode,
+}: DraggableProps) {
+  const [tileDimension, setTileDimensions] = useState<any>();
+  const currentPosition = useSharedValue<Position | null>(null);
+
+  const isPressing = useSharedValue(false);
+  const scale = useSharedValue(1);
+  const offsetX = useSharedValue<number>(0);
+  const offsetY = useSharedValue<number>(0);
+
+  const longPress = Gesture.LongPress()
+    .onBegin(() => {
+      if (isEditMode) {
+        return;
+      }
+      isPressing.value = true;
+      scale.value = withTiming(1.1, { duration: 500 });
+    })
+    .onStart(() => {
+      scale.value = withTiming(1, { duration: 150 }, (finished) => {
+        if (finished) {
+          runOnJS(setEditMode)(true);
+          isPressing.value = false;
+        }
+      });
+    })
+    .onFinalize(() => {
+      scale.value = withTiming(1, { duration: 150 });
+    });
+
+  const tap = Gesture.Tap().onStart(() => {
+    runOnJS(setEditMode)(false);
+  });
+
+  const pan = Gesture.Pan()
+    .onBegin(() => {
+      activeItemId.value = id;
+    })
+    .onChange((e) => {
+      if (!isEditMode) {
+        return;
+      }
+      const column = Math.floor(
+        e.absoluteX / (tileDimension?.width + layout.gap)
+      );
+      const row = Math.floor(
+        e.absoluteY / (tileDimension?.height + layout.gap)
+      );
+
+      const newPlaceholderIndex = Math.min(
+        column + row * layout.itemsInRowCount,
+        apps.length
+      );
+
+      runOnJS(setPlaceholderIndex)(newPlaceholderIndex);
+
+      offsetX.value += e.changeX;
+      offsetY.value += e.changeY;
+
+      currentPosition.value = {
+        column,
+        row,
+      };
+    })
+    .onFinalize(() => {
+      runOnJS(reorderItems)();
+
+      // Cleanup
+      offsetX.value = 0;
+      offsetY.value = 0;
+      activeItemId.value = null;
+      runOnJS(setPlaceholderIndex)(null);
+      currentPosition.value = null;
+    });
+
+  const scaleStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const adjustX = withTiming(
+      currentPosition.value
+        ? (initialPosition.column - currentPosition.value.column) *
+            (tileDimension?.width + layout.gap)
+        : 0
+    );
+    const adjustY = withTiming(
+      currentPosition.value
+        ? (initialPosition.row - currentPosition.value.row) *
+            (tileDimension?.height + layout.gap)
+        : 0
+    );
+
+    return {
+      transform: [
+        { translateX: offsetX.value + adjustX },
+        { translateY: offsetY.value + adjustY },
+      ],
+      zIndex: activeItemId.value === id ? 1 : 0,
+    };
+  });
+
+  const composed = Gesture.Exclusive(longPress, tap, pan);
+
+  return (
+    <GestureDetector gesture={composed}>
+      <Animated.View
+        style={[
+          isEditMode && {
+            animationName: shake,
+            animationDuration: 700,
+            animationIterationCount: "infinite",
+            animationDelay: Math.random() * 300,
+          },
+          scaleStyle,
+          animatedStyle,
+        ]}
+        onLayout={(e) => setTileDimensions(e.nativeEvent.layout)}
+        layout={LinearTransition}
+      >
+        {children}
+      </Animated.View>
+    </GestureDetector>
+  );
 }
 
 const shake: CSSAnimationKeyframes = {
@@ -54,76 +191,12 @@ const shake: CSSAnimationKeyframes = {
   },
 };
 
-function Draggable({
-  children,
-  id,
-  setPlaceholderIndex,
-  reorderItems,
-  activeItemId,
-  initialPosition,
-  isEditMode,
-  setEditMode,
-}: DraggableProps) {
-  const [tileDimension, setTileDimensions] = useState<any>();
-
-  const scale = useSharedValue(1);
-
-  const longPress = Gesture.LongPress()
-    .onBegin(() => {
-      if (isEditMode) {
-        return;
-      }
-      scale.value = withTiming(1.1, { duration: 500 });
-    })
-    .onStart(() => {
-      scale.value = withTiming(1, { duration: 150 }, (finished) => {
-        if (finished) {
-          runOnJS(setEditMode)(true);
-        }
-      });
-    })
-    .onFinalize(() => {
-      scale.value = withTiming(1, { duration: 150 });
-    });
-
-  const tap = Gesture.Tap().onStart(() => {
-    runOnJS(setEditMode)(false);
-  });
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-    };
-  });
-
-  const composed = Gesture.Exclusive(longPress, tap);
-
-  return (
-    <GestureDetector gesture={composed}>
-      <Animated.View
-        style={[
-          isEditMode && {
-            animationName: shake,
-            animationDuration: 700,
-            animationIterationCount: "infinite",
-            animationDelay: Math.random() * 300,
-          },
-          animatedStyle,
-        ]}
-        onLayout={(e) => setTileDimensions(e.nativeEvent.layout)}
-      >
-        {children}
-      </Animated.View>
-    </GestureDetector>
-  );
-}
-
 export function ReorderIconsLesson() {
   const insets = useSafeAreaInsets();
   const [items, setItems] = useState(apps);
-  const activeItemId = useSharedValue<string | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
   const [isEditMode, setEditMode] = useState(false);
+  const activeItemId = useSharedValue<string | null>(null);
 
   const reorderItems = () => {
     if (placeholderIndex === null || activeItemId.value === null) {
