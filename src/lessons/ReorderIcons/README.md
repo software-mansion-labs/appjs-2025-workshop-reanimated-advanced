@@ -1,6 +1,7 @@
 # Reorder Icons (Drag and Drop)
 
-[reorder-icons-final.webm](https://github.com/user-attachments/assets/a1ff8730-dc16-443d-9169-1f9969cc8b9d)
+[reorder-icons-final.webm](https://github.com/user-attachments/assets/a6286f11-af9d-4df1-a3e8-e02bc0601eb1)
+
 
 ## Step 1
 
