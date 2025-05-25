@@ -1,5 +1,7 @@
 # Reorder Icons (Drag and Drop)
 
+[reorder-icons-final.webm](https://github.com/user-attachments/assets/a1ff8730-dc16-443d-9169-1f9969cc8b9d)
+
 ## Step 1
 
 _VIDEO PLACEHOLDER_
