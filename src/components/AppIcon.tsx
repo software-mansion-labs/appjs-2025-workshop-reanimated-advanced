@@ -14,11 +14,12 @@ interface AppIconProps {
     name: string;
     icon: ImageSourcePropType;
   };
+  onLayout?: (event: any) => void;
 }
 
-export function AppIcon({ app }: AppIconProps) {
+export function AppIcon({ app, onLayout }: AppIconProps) {
   return (
-    <View style={styles.appContainer}>
+    <View style={styles.appContainer} onLayout={onLayout}>
       <Image source={app.icon} style={styles.appIcon} />
       <Text style={styles.appName} numberOfLines={1}>
         {app.name}

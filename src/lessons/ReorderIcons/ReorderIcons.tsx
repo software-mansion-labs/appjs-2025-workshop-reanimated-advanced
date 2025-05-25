@@ -2,6 +2,7 @@ import { AppIcon } from "@/components/AppIcon";
 import { apps } from "@/lib/apps";
 import { layout } from "@/lib/theme";
 import { useEffect, useState } from "react";
+import type { LayoutChangeEvent } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -20,6 +21,11 @@ interface Position {
   row: number;
 }
 
+interface Dimension {
+  width: number;
+  height: number;
+}
+
 interface DraggableProps {
   children: React.ReactNode;
   id: string;
@@ -29,6 +35,7 @@ interface DraggableProps {
   initialPosition: Position;
   isEditMode: boolean;
   setEditMode: (edit: boolean) => void;
+  tileDimension: Dimension | null;
 }
 
 function Draggable({
@@ -40,8 +47,8 @@ function Draggable({
   initialPosition,
   isEditMode,
   setEditMode,
+  tileDimension,
 }: DraggableProps) {
-  const [tileDimension, setTileDimensions] = useState<any>();
   const currentPosition = useSharedValue<Position | null>(null);
 
   const scale = useSharedValue(1);
@@ -75,15 +82,13 @@ function Draggable({
       activeItemId.value = id;
     })
     .onChange((e) => {
-      if (!isEditMode) {
+      if (!tileDimension || !isEditMode) {
         return;
       }
       const column = Math.floor(
-        e.absoluteX / (tileDimension?.width + layout.gap)
+        e.absoluteX / (tileDimension.width + layout.gap)
       );
-      const row = Math.floor(
-        e.absoluteY / (tileDimension?.height + layout.gap)
-      );
+      const row = Math.floor(e.absoluteY / (tileDimension.height + layout.gap));
 
       const newPlaceholderIndex = Math.min(
         column + row * layout.itemsInRowCount,
@@ -118,16 +123,20 @@ function Draggable({
   });
 
   const draggingStyle = useAnimatedStyle(() => {
+    if (!tileDimension) {
+      return {};
+    }
+
     const adjustX = withTiming(
       currentPosition.value
         ? (initialPosition.column - currentPosition.value.column) *
-            (tileDimension?.width + layout.gap)
+            (tileDimension.width + layout.gap)
         : 0
     );
     const adjustY = withTiming(
       currentPosition.value
         ? (initialPosition.row - currentPosition.value.row) *
-            (tileDimension?.height + layout.gap)
+            (tileDimension.height + layout.gap)
         : 0
     );
 
@@ -155,7 +164,6 @@ function Draggable({
           scaleStyle,
           draggingStyle,
         ]}
-        onLayout={(e) => setTileDimensions(e.nativeEvent.layout)}
         layout={LinearTransition}
       >
         {children}
@@ -191,9 +199,18 @@ const shake: CSSAnimationKeyframes = {
 export function ReorderIconsLesson() {
   const insets = useSafeAreaInsets();
   const [items, setItems] = useState(apps);
+  const [tileDimension, setTileDimension] = useState<Dimension | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
   const [isEditMode, setEditMode] = useState(false);
   const activeItemId = useSharedValue<string | null>(null);
+
+  const getTileDimenstion = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    if (!tileDimension) {
+      setTileDimension({ width, height });
+      return;
+    }
+  };
 
   const reorderItems = () => {
     if (placeholderIndex === null || activeItemId.value === null) {
@@ -235,8 +252,9 @@ export function ReorderIconsLesson() {
             }}
             isEditMode={isEditMode}
             setEditMode={setEditMode}
+            tileDimension={tileDimension}
           >
-            <AppIcon app={app} />
+            <AppIcon app={app} onLayout={getTileDimenstion} />
           </Draggable>
         ))}
       </View>
