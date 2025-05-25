@@ -117,7 +117,7 @@ function Draggable({
     };
   });
 
-  const animatedStyle = useAnimatedStyle(() => {
+  const draggingStyle = useAnimatedStyle(() => {
     const adjustX = withTiming(
       currentPosition.value
         ? (initialPosition.column - currentPosition.value.column) *
@@ -153,7 +153,7 @@ function Draggable({
             animationDelay: Math.random() * 300,
           },
           scaleStyle,
-          animatedStyle,
+          draggingStyle,
         ]}
         onLayout={(e) => setTileDimensions(e.nativeEvent.layout)}
         layout={LinearTransition}
