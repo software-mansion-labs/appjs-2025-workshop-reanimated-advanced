@@ -44,7 +44,6 @@ function Draggable({
   const [tileDimension, setTileDimensions] = useState<any>();
   const currentPosition = useSharedValue<Position | null>(null);
 
-  const isPressing = useSharedValue(false);
   const scale = useSharedValue(1);
   const offsetX = useSharedValue<number>(0);
   const offsetY = useSharedValue<number>(0);
@@ -54,14 +53,12 @@ function Draggable({
       if (isEditMode) {
         return;
       }
-      isPressing.value = true;
       scale.value = withTiming(1.1, { duration: 500 });
     })
     .onStart(() => {
       scale.value = withTiming(1, { duration: 150 }, (finished) => {
         if (finished) {
           runOnJS(setEditMode)(true);
-          isPressing.value = false;
         }
       });
     })
