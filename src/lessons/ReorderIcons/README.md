@@ -4,7 +4,8 @@
 
 ## Step 1 - Drag the icon around
 
-_VIDEO PLACEHOLDER_
+[draggable-icons.webm](https://github.com/user-attachments/assets/874bb8c2-378a-4bd5-88e3-bebdbcba5e09)
+
 
 <details>
 <summary>
