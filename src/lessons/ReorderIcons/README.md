@@ -84,7 +84,11 @@ const draggingStyle = useAnimatedStyle(() => {
 
 ## Step 2 - Calculate the new position for the app
 
-https://github.com/user-attachments/assets/9ace7a6e-7132-4f7a-89f9-2b7507b22dea
+
+
+https://github.com/user-attachments/assets/3607283d-f302-41fc-83b9-31f7cc0ecf5b
+
+
 
 <details>
 <summary>
