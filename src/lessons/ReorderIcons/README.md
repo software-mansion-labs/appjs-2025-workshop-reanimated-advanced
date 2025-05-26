@@ -2,8 +2,7 @@
 
 [reorder-icons-final.webm](https://github.com/user-attachments/assets/a6286f11-af9d-4df1-a3e8-e02bc0601eb1)
 
-
-## Step 1
+## Step 1 - Drag the icon around
 
 _VIDEO PLACEHOLDER_
 
