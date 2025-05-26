@@ -216,6 +216,10 @@ const draggingStyle = useAnimatedStyle(() => {
 
 ## Step 4 - Reorder animation
 
+
+https://github.com/user-attachments/assets/19c21fc6-c700-4df0-a363-cd540657553b
+
+
 ## Next step
 
 **Go to: [Dynamic Tabs](../DynamicTabs/)**
