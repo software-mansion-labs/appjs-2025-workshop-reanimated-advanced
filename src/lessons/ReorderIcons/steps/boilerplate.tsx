@@ -24,7 +24,7 @@ interface DraggableProps {
   id: string;
   setPlaceholderIndex: (index: number | null) => void;
   reorderItems: () => void;
-  activeItemId: SharedValue<string | null>;
+  draggingItemId: SharedValue<string | null>;
   initialPosition: Position;
   isEditMode: boolean;
   setEditMode: (edit: boolean) => void;
@@ -59,7 +59,7 @@ function Draggable({
   id,
   setPlaceholderIndex,
   reorderItems,
-  activeItemId,
+  draggingItemId,
   initialPosition,
   isEditMode,
   setEditMode,
@@ -121,15 +121,15 @@ function Draggable({
 export function ReorderIconsLesson() {
   const insets = useSafeAreaInsets();
   const [items, setItems] = useState(apps);
-  const activeItemId = useSharedValue<string | null>(null);
+  const draggingItemId = useSharedValue<string | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
   const [isEditMode, setEditMode] = useState(false);
 
   const reorderItems = () => {
-    if (placeholderIndex === null || activeItemId.value === null) {
+    if (placeholderIndex === null || draggingItemId.value === null) {
       return;
     }
-    const currentItem = items.find((item) => item.id === activeItemId.value);
+    const currentItem = items.find((item) => item.id === draggingItemId.value);
     if (!currentItem) {
       return;
     }
@@ -137,7 +137,7 @@ export function ReorderIconsLesson() {
     const newItems = [...items];
 
     const activeIndex = newItems.findIndex(
-      (item) => item.id === activeItemId.value
+      (item) => item.id === draggingItemId.value
     );
     newItems.splice(activeIndex, 1);
     newItems.splice(placeholderIndex, 0, currentItem);
@@ -156,7 +156,7 @@ export function ReorderIconsLesson() {
           <Draggable
             key={app.id}
             id={app.id}
-            activeItemId={activeItemId}
+            draggingItemId={draggingItemId}
             setPlaceholderIndex={setPlaceholderIndex}
             reorderItems={reorderItems}
             initialPosition={{

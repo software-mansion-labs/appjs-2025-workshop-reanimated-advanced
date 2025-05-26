@@ -31,7 +31,7 @@ interface DraggableProps {
   id: string;
   setPlaceholderIndex: (index: number | null) => void;
   reorderItems: () => void;
-  activeItemId: SharedValue<string | null>;
+  draggingItemId: SharedValue<string | null>;
   initialPosition: Position;
   isEditMode: boolean;
   setEditMode: (edit: boolean) => void;
@@ -43,7 +43,7 @@ function Draggable({
   id,
   setPlaceholderIndex,
   reorderItems,
-  activeItemId,
+  draggingItemId,
   initialPosition,
   isEditMode,
   setEditMode,
@@ -79,7 +79,7 @@ function Draggable({
 
   const pan = Gesture.Pan()
     .onBegin(() => {
-      activeItemId.value = id;
+      draggingItemId.value = id;
     })
     .onChange((e) => {
       if (!tileDimension || !isEditMode) {
@@ -111,7 +111,7 @@ function Draggable({
       // Cleanup
       offsetX.value = 0;
       offsetY.value = 0;
-      activeItemId.value = null;
+      draggingItemId.value = null;
       runOnJS(setPlaceholderIndex)(null);
       currentPosition.value = null;
     });
@@ -145,7 +145,7 @@ function Draggable({
         { translateX: offsetX.value + adjustX },
         { translateY: offsetY.value + adjustY },
       ],
-      zIndex: activeItemId.value === id ? 1 : 0,
+      zIndex: draggingItemId.value === id ? 1 : 0,
     };
   });
 
@@ -202,7 +202,7 @@ export function ReorderIconsLesson() {
   const [tileDimension, setTileDimension] = useState<Dimension | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const activeItemId = useSharedValue<string | null>(null);
+  const draggingItemId = useSharedValue<string | null>(null);
 
   const getTileDimension = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
@@ -213,10 +213,10 @@ export function ReorderIconsLesson() {
   };
 
   const reorderItems = () => {
-    if (placeholderIndex === null || activeItemId.value === null) {
+    if (placeholderIndex === null || draggingItemId.value === null) {
       return;
     }
-    const currentItem = items.find((item) => item.id === activeItemId.value);
+    const currentItem = items.find((item) => item.id === draggingItemId.value);
     if (!currentItem) {
       return;
     }
@@ -224,7 +224,7 @@ export function ReorderIconsLesson() {
     const newItems = [...items];
 
     const activeIndex = newItems.findIndex(
-      (item) => item.id === activeItemId.value
+      (item) => item.id === draggingItemId.value
     );
     newItems.splice(activeIndex, 1);
     newItems.splice(placeholderIndex, 0, currentItem);
@@ -243,7 +243,7 @@ export function ReorderIconsLesson() {
           <Draggable
             key={app.id}
             id={app.id}
-            activeItemId={activeItemId}
+            draggingItemId={draggingItemId}
             setPlaceholderIndex={setPlaceholderIndex}
             reorderItems={reorderItems}
             initialPosition={{
