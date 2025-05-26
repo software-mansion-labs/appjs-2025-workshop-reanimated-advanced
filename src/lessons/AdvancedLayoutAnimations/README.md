@@ -21,7 +21,8 @@ For `opened` state we display
 
 ## Step 1
 
-https://github.com/user-attachments/assets/82907db8-d877-4ef5-98d0-2d721ba08d58
+https://github.com/user-attachments/assets/ca2dfa7e-6e5a-4064-8c5a-f84956716364
+
 
 In this step, we will animate the FAB button container layout changes using `layout` property, based on `isOpen` (inline styles)
 
