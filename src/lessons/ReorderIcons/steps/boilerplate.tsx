@@ -2,6 +2,7 @@ import { AppIcon } from "@/components/AppIcon";
 import { apps } from "@/lib/apps";
 import { layout } from "@/lib/theme";
 import { useEffect, useState } from "react";
+import type { LayoutChangeEvent } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -19,6 +20,11 @@ interface Position {
   row: number;
 }
 
+interface Dimension {
+  width: number;
+  height: number;
+}
+
 interface DraggableProps {
   children: React.ReactNode;
   id: string;
@@ -28,6 +34,7 @@ interface DraggableProps {
   initialPosition: Position;
   isEditMode: boolean;
   setEditMode: (edit: boolean) => void;
+  tileDimension: Dimension | null;
 }
 
 const shake: CSSAnimationKeyframes = {
@@ -63,9 +70,8 @@ function Draggable({
   initialPosition,
   isEditMode,
   setEditMode,
+  tileDimension,
 }: DraggableProps) {
-  const [tileDimension, setTileDimensions] = useState<any>();
-
   const scale = useSharedValue(1);
 
   const longPress = Gesture.LongPress()
@@ -90,7 +96,7 @@ function Draggable({
     runOnJS(setEditMode)(false);
   });
 
-  const animatedStyle = useAnimatedStyle(() => {
+  const scaleStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }],
     };
@@ -108,9 +114,8 @@ function Draggable({
             animationIterationCount: "infinite",
             animationDelay: Math.random() * 300,
           },
-          animatedStyle,
+          scaleStyle,
         ]}
-        onLayout={(e) => setTileDimensions(e.nativeEvent.layout)}
       >
         {children}
       </Animated.View>
@@ -121,9 +126,18 @@ function Draggable({
 export function ReorderIconsLesson() {
   const insets = useSafeAreaInsets();
   const [items, setItems] = useState(apps);
-  const draggingItemId = useSharedValue<string | null>(null);
+  const [tileDimension, setTileDimension] = useState<Dimension | null>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
   const [isEditMode, setEditMode] = useState(false);
+  const draggingItemId = useSharedValue<string | null>(null);
+
+  const getTileDimension = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    if (!tileDimension) {
+      setTileDimension({ width, height });
+      return;
+    }
+  };
 
   const reorderItems = () => {
     if (placeholderIndex === null || draggingItemId.value === null) {
@@ -165,8 +179,9 @@ export function ReorderIconsLesson() {
             }}
             isEditMode={isEditMode}
             setEditMode={setEditMode}
+            tileDimension={tileDimension}
           >
-            <AppIcon app={app} />
+            <AppIcon app={app} onLayout={getTileDimension} />
           </Draggable>
         ))}
       </View>
