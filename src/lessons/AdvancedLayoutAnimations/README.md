@@ -140,7 +140,7 @@ const AnimatedEntypo = Animated.createAnimatedComponent(Entypo);
 
 </details>
 <br />
-<details>
+<details open>
 <summary>
   <b>[4]</b> Since we are changing the layout of the container, `small -> large` based on `isOpen`, the <b>position (x,y)</b> of the icon it is changed hence, we need to apply the motion to the `layout` changes of the icons container.
 </summary>
@@ -189,7 +189,7 @@ https://github.com/user-attachments/assets/b78391ca-e954-4b40-9d94-d2e29b678c51
 
 In this step we'll animate the mounting/unmounting of the content and the title rendered inside the FAB container.
 
-<details>
+<details open>
 <summary>
   <b>[1]</b> Animate the FAB heading text render
 </summary>
@@ -230,7 +230,7 @@ In this step we'll animate the mounting/unmounting of the content and the title 
 </details>
 </details>
 
-<details>
+<details open>
 <summary>
   <b>[2]</b> Animate the FAB content
 </summary>
