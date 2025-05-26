@@ -150,7 +150,11 @@ const pan = Gesture.Pan()
 </details>
 <br />
 
-## Step 3 - Adjust the position of the application by the value of the layout offset
+## Step 3 - Adjust the position of the app icon by the value of the layout offset
+
+
+https://github.com/user-attachments/assets/7509f55c-b1ec-4e98-bddf-964ad74e8c0d
+
 
 ## Next step
 
