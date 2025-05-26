@@ -232,6 +232,42 @@ https://github.com/user-attachments/assets/19c21fc6-c700-4df0-a363-cd540657553b
 </details>
 <br />
 
+## Step 5 - Hook it up to a CSS Animation
+
+[reorder-icons-final.webm](https://github.com/user-attachments/assets/a6286f11-af9d-4df1-a3e8-e02bc0601eb1)
+
+<details>
+<summary>
+  <b>[1]</b> Use gesture composition where only one of <code>longPress</code>, <code>tap</code>, or <code>pan</code> gestures is active.
+</summary>
+
+```tsx
+const composed = Gesture.Exclusive(longPress, tap, pan);
+
+return <GestureDetector gesture={composed}>{/* ... */}</GestureDetector>;
+```
+
+</details>
+<br />
+
+<details>
+<summary>
+  <b>[2]</b> Prevent <code>Gesture.Pan</code>'s <code>onChange</code> running when edit mode is enabled.
+</summary>
+
+```tsx
+  const pan = Gesture.Pan()
+    .onChange((e) => {
+      if (!tileDimension || !isEditMode) {
+        return;
+      }
+      // ...
+    }
+```
+
+</details>
+<br />
+
 ## Next step
 
 **Go to: [Dynamic Tabs](../DynamicTabs/)**
