@@ -214,6 +214,8 @@ const draggingStyle = useAnimatedStyle(() => {
 </details>
 <br />
 
+## Step 4 - Reorder animation
+
 ## Next step
 
 **Go to: [Dynamic Tabs](../DynamicTabs/)**
