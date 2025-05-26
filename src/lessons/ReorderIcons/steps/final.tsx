@@ -123,21 +123,17 @@ function Draggable({
   });
 
   const draggingStyle = useAnimatedStyle(() => {
-    if (!tileDimension) {
+    if (!tileDimension || currentPosition.value === null) {
       return {};
     }
 
     const adjustX = withTiming(
-      currentPosition.value
-        ? (initialPosition.column - currentPosition.value.column) *
-            (tileDimension.width + layout.gap)
-        : 0
+      (initialPosition.column - currentPosition.value.column) *
+        (tileDimension.width + layout.gap)
     );
     const adjustY = withTiming(
-      currentPosition.value
-        ? (initialPosition.row - currentPosition.value.row) *
-            (tileDimension.height + layout.gap)
-        : 0
+      (initialPosition.row - currentPosition.value.row) *
+        (tileDimension.height + layout.gap)
     );
 
     return {
