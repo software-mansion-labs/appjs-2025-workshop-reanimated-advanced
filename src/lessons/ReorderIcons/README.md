@@ -1,5 +1,8 @@
 # Reorder Icons (Drag and Drop)
 
+In this lesson we're going to implement a drag'n'drop using React Native Gesture Handler paired
+with Layout Animations. We're going to reuse the CSS Animation shake implemented in the previous lesson.
+
 [reorder-icons-final.webm](https://github.com/user-attachments/assets/a6286f11-af9d-4df1-a3e8-e02bc0601eb1)
 
 ## Step 1 - Drag the icon around
@@ -54,6 +57,9 @@ const draggingStyle = useAnimatedStyle(() => {
 <details>
 <summary>
   <b>[2]</b> Adjust the <code>zIndex</code> in the animated style for currently dragged icon. Use the <code>draggingItemId</code> shared value. Make sure it's up-to-date first!
+
+⚠️ Hint: Use <code>onBegin</code>, <code>onChange</code>, and <code>onFinalize</code> callbacks.
+
 </summary>
 
 ```jsx
@@ -89,6 +95,9 @@ https://github.com/user-attachments/assets/3607283d-f302-41fc-83b9-31f7cc0ecf5b
 <details>
 <summary>
   <b>[1]</b> In <code>Gesture.Pan</code>'s <code>onChange</code> calculate the current column and row the app icon is currently dragged above. Do the calculations based on the absolute position of the gesture and the dimenstions of a tile.
+
+⚠️ Hint: You're going to need <code>e.absoluteX</code> and <code>e.absoluteY</code>.
+
 </summary>
 
 ```tsx
@@ -111,7 +120,10 @@ https://github.com/user-attachments/assets/3607283d-f302-41fc-83b9-31f7cc0ecf5b
 
 <details>
 <summary>
-  <b>[2]</b> The new position index is <code>column + row * items in row</code>. Cap it to never go above max index in the items array. Update the <code>placeholderIndex</code> state variable with the newly calculated value. 
+  <b>[2]</b> The new position index is <code>column + row * items in row</code>. Cap it to never go above max index in the items array. Update the <code>placeholderIndex</code> state variable with the newly calculated value.
+
+⚠️ Hint: The state change should be triggered using <code>runOnJS</code>.
+
 </summary>
 
 ```tsx
@@ -134,6 +146,9 @@ https://github.com/user-attachments/assets/3607283d-f302-41fc-83b9-31f7cc0ecf5b
 <details>
 <summary>
   <b>[3]</b> Run <code>reorderItems</code> when user drops the icon. Make sure to clean-up the <code>placehoderIndex</code>.
+
+⚠️ Hint: <code>runOnJS</code> is your friend.
+
 </summary>
 
 ```tsx
