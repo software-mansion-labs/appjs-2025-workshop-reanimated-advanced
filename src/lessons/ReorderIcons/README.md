@@ -84,9 +84,7 @@ const draggingStyle = useAnimatedStyle(() => {
 
 ## Step 2 - Calculate the new position for the app
 
-
 https://github.com/user-attachments/assets/9ace7a6e-7132-4f7a-89f9-2b7507b22dea
-
 
 <details>
 <summary>
@@ -151,6 +149,8 @@ const pan = Gesture.Pan()
 
 </details>
 <br />
+
+## Step 3 - Adjust the position of the application by the value of the layout offset
 
 ## Next step
 

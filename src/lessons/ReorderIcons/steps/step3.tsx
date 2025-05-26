@@ -48,6 +48,8 @@ function Draggable({
   setEditMode,
   tileDimension,
 }: DraggableProps) {
+  const currentPosition = useSharedValue<Position | null>(null);
+
   const scale = useSharedValue(1);
   const offsetX = useSharedValue<number>(0);
   const offsetY = useSharedValue<number>(0);
@@ -96,6 +98,11 @@ function Draggable({
 
       offsetX.value += e.changeX;
       offsetY.value += e.changeY;
+
+      currentPosition.value = {
+        column,
+        row,
+      };
     })
     .onFinalize(() => {
       runOnJS(reorderItems)();
@@ -105,6 +112,7 @@ function Draggable({
       offsetY.value = 0;
       draggingItemId.value = null;
       runOnJS(setPlaceholderIndex)(null);
+      currentPosition.value = null;
     });
 
   const scaleStyle = useAnimatedStyle(() => {
@@ -114,8 +122,24 @@ function Draggable({
   });
 
   const draggingStyle = useAnimatedStyle(() => {
+    if (!tileDimension || currentPosition.value === null) {
+      return {};
+    }
+
+    const adjustX = withTiming(
+      (initialPosition.column - currentPosition.value.column) *
+        (tileDimension.width + layout.gap)
+    );
+    const adjustY = withTiming(
+      (initialPosition.row - currentPosition.value.row) *
+        (tileDimension.height + layout.gap)
+    );
+
     return {
-      transform: [{ translateX: offsetX.value }, { translateY: offsetY.value }],
+      transform: [
+        { translateX: offsetX.value + adjustX },
+        { translateY: offsetY.value + adjustY },
+      ],
       zIndex: draggingItemId.value === id ? 1 : 0,
     };
   });
