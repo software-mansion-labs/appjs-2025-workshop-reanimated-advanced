@@ -84,11 +84,7 @@ const draggingStyle = useAnimatedStyle(() => {
 
 ## Step 2 - Calculate the new position for the app
 
-
-
 https://github.com/user-attachments/assets/3607283d-f302-41fc-83b9-31f7cc0ecf5b
-
-
 
 <details>
 <summary>
@@ -156,9 +152,67 @@ const pan = Gesture.Pan()
 
 ## Step 3 - Adjust the position of the app icon by the value of the layout offset
 
-
 https://github.com/user-attachments/assets/7509f55c-b1ec-4e98-bddf-964ad74e8c0d
 
+<details>
+<summary>
+  <b>[1]</b> Define a new <code>currentPosition</code> shared value and make sure it holds the current <code>column</code> and <code>row</code> calculated in the previous step. You can use the <code>Position</code> interface as a type. Don't forget to clean up after the gesture end. 
+</summary>
+
+```tsx
+const currentPosition = useSharedValue<Position | null>(null);
+
+const pan = Gesture.Pan()
+  .onChange((e) => {
+    const column = // ...
+    const row = // ...
+
+    // ...
+
+    currentPosition.value = { column, row };
+  })
+  .onFinalize(() => {
+    // ...
+    currentPosition.value = null;
+  });
+```
+
+</details>
+<br />
+
+<details>
+<summary>
+  <b>[2]</b> Based on <code>initialPosition</code>, <code>currentPosition</code> and tile dimensions calculate the gesture adjustment for both <code>offsetX</code> and <code>offsetY</code>. Wrap the calculated adjustments in <code>withTiming</code>.
+</summary>
+
+```tsx
+const draggingStyle = useAnimatedStyle(() => {
+  if (!tileDimension || currentPosition.value === null) {
+    return {};
+  }
+
+  const adjustX = withTiming(
+    (initialPosition.column - currentPosition.value.column) *
+      (tileDimension.width + layout.gap)
+  );
+
+  const adjustY = withTiming(
+    (initialPosition.row - currentPosition.value.row) *
+      (tileDimension.height + layout.gap)
+  );
+
+  return {
+    transform: [
+      { translateX: offsetX.value + adjustX },
+      { translateY: offsetY.value + adjustY },
+      // ...
+    ],
+  };
+});
+```
+
+</details>
+<br />
 
 ## Next step
 
