@@ -6,7 +6,7 @@ https://user-images.githubusercontent.com/2805320/236649726-82140d72-177f-4895-a
 
 https://user-images.githubusercontent.com/2805320/236649722-47f571e5-45a4-4247-b1b0-8f88be584115.mov
 
-<details>
+<details open>
 <summary>
   <b>[1]</b> `measure` each individual tab layout (`width`, `height`, `x` and `y` )
 </summary>
