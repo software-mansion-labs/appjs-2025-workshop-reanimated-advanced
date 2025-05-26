@@ -99,10 +99,7 @@ function Draggable({
       offsetX.value += e.changeX;
       offsetY.value += e.changeY;
 
-      currentPosition.value = {
-        column,
-        row,
-      };
+      currentPosition.value = { column, row };
     })
     .onFinalize(() => {
       runOnJS(reorderItems)();
