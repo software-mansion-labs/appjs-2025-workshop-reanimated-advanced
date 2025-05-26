@@ -82,7 +82,71 @@ const draggingStyle = useAnimatedStyle(() => {
 </details>
 <br />
 
-## Step 2 - Calculate the placeholder index
+## Step 2 - Calculate the new position for the app
+
+<details>
+<summary>
+  <b>[1]</b> In <code>Gesture.Pan</code>'s <code>onChange</code> calculate the current column and row the app icon is currently dragged above. Do the calculations based on the absolute position of the gesture and the dimenstions of a tile.
+</summary>
+
+```tsx
+  const pan = Gesture.Pan()
+    // ...
+    .onChange((e) => {
+      if (!tileDimension) {
+        return;
+      }
+      const column = Math.floor(
+        e.absoluteX / (tileDimension.width + layout.gap)
+      );
+      const row = Math.floor(e.absoluteY / (tileDimension.height + layout.gap));
+      // ...
+    }
+```
+
+</details>
+<br />
+
+<details>
+<summary>
+  <b>[2]</b> The new position index is <code>column + row * items in row</code>. Cap it to never go above max index in the items array. Update the <code>placeholderIndex</code> state variable with the newly calculated value. 
+</summary>
+
+```tsx
+  const pan = Gesture.Pan()
+    // ..
+    .onChange((e) => {
+      // ...
+      const newPlaceholderIndex = Math.min(
+        column + row * layout.itemsInRowCount,
+        apps.length
+      );
+
+      runOnJS(setPlaceholderIndex)(newPlaceholderIndex);
+    }
+```
+
+</details>
+<br />
+
+<details>
+<summary>
+  <b>[3]</b> Run <code>reorderItems</code> when user drops the icon. Make sure to clean-up the <code>placehoderIndex</code>.
+</summary>
+
+```tsx
+const pan = Gesture.Pan()
+  // ...
+  .onFinalize(() => {
+    // ...
+    runOnJS(reorderItems)();
+
+    runOnJS(setPlaceholderIndex)(null);
+  });
+```
+
+</details>
+<br />
 
 ## Next step
 
