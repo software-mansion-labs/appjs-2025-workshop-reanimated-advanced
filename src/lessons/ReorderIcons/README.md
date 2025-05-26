@@ -216,9 +216,21 @@ const draggingStyle = useAnimatedStyle(() => {
 
 ## Step 4 - Reorder animation
 
-
 https://github.com/user-attachments/assets/19c21fc6-c700-4df0-a363-cd540657553b
 
+<details>
+<summary>
+  <b>[1]</b> Add a <code>LinearTransition</code> layout animation to an <code>Animated.View</code>.
+</summary>
+
+```tsx
+<Animated.View style={/* ... */} layout={LinearTransition}>
+  {children}
+</Animated.View>
+```
+
+</details>
+<br />
 
 ## Next step
 
