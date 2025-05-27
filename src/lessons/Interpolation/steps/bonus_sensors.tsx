@@ -117,7 +117,6 @@ export function CellRenderer({
     const { pitch } = sensor.sensor.value;
     // Compensate the "default" angle that a user might hold the phone at :)
     // 40 degrees to radians
-    console.log(pitch);
     const angle = clamp(pitch, -Math.PI / 4, Math.PI) - 40 * (Math.PI / 180);
     return withSpring(-angle, { damping: 300 });
   });
