@@ -10,6 +10,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Extrapolation,
   SharedValue,
+  clamp,
   interpolate,
   measure,
   runOnJS,

@@ -3,8 +3,8 @@ import { Container } from "@/components/Container";
 import { items } from "@/lib/mock";
 import { colors, layout } from "@/lib/theme";
 import React from "react";
-import { Animated, ListRenderItemInfo, StyleSheet, Text } from "react-native";
-import {
+import { ListRenderItemInfo, StyleSheet, Text } from "react-native";
+import Animated, {
   SharedValue,
   interpolateColor,
   useAnimatedScrollHandler,

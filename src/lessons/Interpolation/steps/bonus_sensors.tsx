@@ -5,6 +5,8 @@ import { colors, layout } from "@/lib/theme";
 import React from "react";
 import {
   CellRendererProps,
+  FlatList,
+  FlatListProps,
   ListRenderItemInfo,
   StyleSheet,
   Text,
@@ -26,6 +28,9 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
+const AnimatedFlatList =
+  Animated.createAnimatedComponent<FlatListProps<ItemType>>(FlatList);
+
 type ItemType = (typeof items)[0];
 
 export function Interpolation() {
@@ -39,7 +44,7 @@ export function Interpolation() {
   return (
     <Container style={styles.container}>
       <Text>Requires running on real device.</Text>
-      <Animated.FlatList
+      <AnimatedFlatList
         data={items}
         horizontal
         CellRendererComponent={(props) => (
@@ -112,6 +117,7 @@ export function CellRenderer({
     const { pitch } = sensor.sensor.value;
     // Compensate the "default" angle that a user might hold the phone at :)
     // 40 degrees to radians
+    console.log(pitch);
     const angle = clamp(pitch, -Math.PI / 4, Math.PI) - 40 * (Math.PI / 180);
     return withSpring(-angle, { damping: 300 });
   });
@@ -123,10 +129,8 @@ export function CellRenderer({
   });
   const stylez = useAnimatedStyle(() => {
     return {
-      zIndex: interpolate(
-        scrollX.value,
-        [index - 1, index, index + 1],
-        [0, 10000, 0]
+      zIndex: Math.floor(
+        interpolate(scrollX.value, [index - 1, index, index + 1], [0, 10000, 0])
       ),
       transform: [
         {

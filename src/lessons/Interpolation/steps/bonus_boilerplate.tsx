@@ -102,10 +102,8 @@ export function CellRenderer({
 }: CellRendererItemProps) {
   const stylez = useAnimatedStyle(() => {
     return {
-      zIndex: interpolate(
-        scrollX.value,
-        [index - 1, index, index + 1],
-        [0, 10000, 0]
+      zIndex: Math.floor(
+        interpolate(scrollX.value, [index - 1, index, index + 1], [0, 10000, 0])
       ),
       transform: [
         {
