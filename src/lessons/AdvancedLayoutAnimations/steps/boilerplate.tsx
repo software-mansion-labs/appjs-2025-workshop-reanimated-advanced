@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 const { width } = Dimensions.get("screen");
+const _duration = 500;
 const _spacing = 16;
 const _closedSize = 64;
 const _openedSize = width - _spacing * 2;
