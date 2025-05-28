@@ -51,6 +51,8 @@ const sendMeasurements = () => {
 <details>
 <summary>
   Now, we need to call the method responsible for measuring the tab ref whenever `isActiveTabIndex` props is `true` or when the `Tab` is initially loaded (first mount)
+  <br />
+  The `onPress` on the `Tab` should also call `sendMeasurements`, in this way, we are going to change the `Indicator` whenever the user is pressing on the tab button.
 </summary>
 
 ```tsx
